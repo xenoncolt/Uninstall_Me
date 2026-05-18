@@ -13,6 +13,7 @@ class Player {
 
         // physics
         sf::Vector2f position = {100.f, 300.f};
+        sf::Vector2f spawn_point = {100.f, 300.f};
         float velocityX = 0.f;
         float velocityY = 0.f;
         bool on_ground = false;
@@ -74,7 +75,7 @@ class Player {
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && on_ground) {
-                velocityY = -480.f;
+                velocityY = -250.f;
                 on_ground = false;
             }
         }
@@ -86,6 +87,10 @@ class Player {
             position.y += velocityY * delta_time;
             on_ground = false;  // for reseting collusion check
             animation_timer += delta_time;
+        }
+
+        sf::FloatRect getBounds() const {
+            return sf::FloatRect(position, {width, height});
         }
 
         // animation + position
@@ -141,104 +146,11 @@ class Player {
                 X + 3.f + leg_swing,
                 Y + 19.f
             });
-            // head animation
-            // float headY = 0.f;
-            // float headX = 0.f;
-
-            // if (is_walking) {
-            //     // each pixel move forward
-            //     headY = std::sin(animation_timer * 14.f) * 2.f;
-            //     headX = static_cast<float>(face_direction) * 2.f;
-            // } else if (is_airborne) {
-            //     // same move upward and downward
-            //     headY = static_cast<float>(face_direction) * 3.f;
-            //     headX = -2.f;
-            // } else {
-            //     // updown for idle
-            //     headY = std::sin(animation_timer * 2.f) * 1.5f;
-            // }
-
-            // head.setPosition({
-            //     position.x + 2.f + headX,
-            //     position.y       + headY
-            // });
-
-
-            // // body animation
-            // float bodyY = 0.f;
-            // if (is_walking) {
-            //     bodyY = std::sin(animation_timer * 14.f) * 1.f;
-            // } else {
-            //     bodyY = std::sin(animation_timer * 2.f) * 0.5f;
-            // }
-
-            // body.setPosition({
-            //     position.x,
-            //     position.y + 16.f + bodyY
-            // });
-
-
-            // // arm animation
-            // float left_armY = 0.f;
-            // float right_armY = 0.f;
-
-            // if (is_walking) {
-            //     left_armY = -std::sin(animation_timer * 14.f) * 4.f;
-            //     right_armY = std::sin(animation_timer * 14.f) * 4.f;
-            // } else if (is_airborne) {
-            //     left_armY = -3.f;
-            //     right_armY = -3.f;
-            // }
-
-            // left_arm.setPosition({
-            //     position.x - 6.f,
-            //     position.y + 17.f + left_armY
-            // });
-
-            // right_arm.setPosition({
-            //     position.x + 22.f,
-            //     position.y + 17.f + right_armY
-            // });
-
-            // // leg animation
-            // float left_legY = 0.f;
-            // float right_legY = 0.f; 
-            // float left_legX = 0.f;
-            // float right_legX = 0.f;
-
-            // if (is_walking) {
-            //     float swing = std::sin(animation_timer * 14.f) * 5.f;
-            //     left_legY = swing;
-            //     right_legY = -swing;
-
-            //     left_legX = std::sin(animation_timer * 14.f) * 1.5f;
-            //     right_legX = -std::sin(animation_timer * 14.f) * 1.5f;
-            // } else if (is_airborne) {
-            //     left_legY = -5.f;
-            //     right_legY = -5.f;
-            //     left_legX = -2.f;
-            //     right_legX = 2.f;
-            // } else {
-            //     left_legY = std::sin(animation_timer * 2.f) * 0.5f;
-            //     right_legY = std::sin(animation_timer * 2.f) * 0.5f;
-            // }
-
-            // left_leg.setPosition({
-            //     position.x + left_legX,
-            //     position.y + 34.f + left_legY
-            // });
-
-            // right_leg.setPosition({
-            //     position.x + 14.f + right_legX,
-            //     position.y + 34.f + right_legY
-            // });
-
-            // hit_box.setPosition(position);
         }
 
 
         void draw(sf::RenderWindow& window) {
-            updateShapes();  // set all positions and animation
+            updateShapes();  
 
             window.draw(back_arm);
             window.draw(front_arm);
@@ -246,20 +158,16 @@ class Player {
             window.draw(front_leg);
             window.draw(body);
             window.draw(head);
-            window.draw(hit_box); // for debug
-        }
-
-        // collusion bound
-        sf::FloatRect getBounds() const {
-            return hit_box.getGlobalBounds();
+            //window.draw(hit_box); // for debug
         }
 
         // death + respawn
         void die() {
             death_count++;
-            position = {100.f, 400.f};
+            position = spawn_point;
             velocityX = 0.f;
             velocityY = 0.f;
             animation_timer = 0.f;
+            on_ground = false;
         }
 };
