@@ -18,6 +18,7 @@ class Player {
         float velocityY = 0.f;
         bool on_ground = false;
         int death_count = 0;
+        float jump_speed = 250.f; // dummy value
 
         // animation
         float  animation_timer = 0.f;
@@ -75,7 +76,7 @@ class Player {
             }
 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && on_ground) {
-                velocityY = -250.f;
+                velocityY = -jump_speed;
                 on_ground = false;
             }
         }
